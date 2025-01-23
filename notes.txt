@@ -1,0 +1,6 @@
+[ ] Try examples in haxl model
+  [ ] A >>> (B &&& (C &&& D)) >>> E
+  [ ] A >>> (B &&& (C >>> D)) >>> E
+  [ ] (A >>> B) *** (C >>> D)
+
+[ ] Try pure data source and in-memory database

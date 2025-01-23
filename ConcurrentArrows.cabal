@@ -91,8 +91,9 @@ executable counter
         , profunctors
         , FreerArrow >= 0.1
 
-library fetch
+executable fetch
     hs-source-dirs: examples/fetch
+    main-is: Main.hs
     default-language: GHC2021
     build-depends:
         , ConcurrentArrows

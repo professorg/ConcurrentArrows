@@ -13,11 +13,16 @@ data Request a where
   FetchPostContent :: PostId -> Request PostContent
   FetchPostViews :: PostId -> Request Int
 
+-- Existential quantified for use in heterogenous list
+-- Blocked request has its own IORef where it places its result
 data BlockedRequest = forall a. BlockedRequest (Request a) (IORef (FetchStatus a))
 
+-- Computation which will eventually result in an a
 data FetchStatus a = NotFetched | FetchSuccess a -- this is just Maybe
 
 data Result a = Done a
+-- Heterogenous sequence of computations which have to run to produce an a
+-- Fetch a is a continuation which can run after each blocked request runs
               | Blocked (Seq BlockedRequest) (Fetch a) -- Sequence of BlockedRequests which must run before an 'a' is reached
 
 newtype Fetch a = Fetch { unFetch :: IO (Result a) }
@@ -63,6 +68,7 @@ getPostViews = dataFetch . FetchPostViews
 ap :: Monad m => m (a -> b) -> m a -> m b
 ap mf mx = do f <- mf; x <- mx; return $ f x
 
+-- This is where concurrency and batching is introduced
 fetch :: [BlockedRequest] -> IO ()
 
 runFetch :: Fetch a -> IO a
